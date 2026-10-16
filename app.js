@@ -3,7 +3,7 @@
 import express from "express";
 import multer from "multer";
 import mammoth from "mammoth";
-import pdfParse from "pdf-parse/lib/pdf-parse.js";
+import { extractText, getDocumentProxy } from "unpdf";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { runCheck } from "./server/check.js";
@@ -24,7 +24,10 @@ app.post("/api/extract", upload.single("file"), async (req, res) => {
     let text;
     if (ext === ".txt" || ext === ".md") text = file.buffer.toString("utf8");
     else if (ext === ".docx") text = (await mammoth.extractRawText({ buffer: file.buffer })).value;
-    else if (ext === ".pdf") text = (await pdfParse(file.buffer)).text;
+    else if (ext === ".pdf") {
+      const pdf = await getDocumentProxy(new Uint8Array(file.buffer));
+      text = (await extractText(pdf)).text.join("\n\n");
+    }
     else if (ext === ".doc") return res.status(415).json({ error: "Old .doc files aren't supported. Save it as .docx or PDF and try again." });
     else return res.status(415).json({ error: `Unsupported file type ${ext || "(none)"}. Use .txt, .docx or .pdf.` });
     text = text.replace(/\r\n?/g, "\n").replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
