@@ -1,0 +1,19 @@
+{
+  "name": "plagiarism-checker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Free web plagiarism checker with per-sentence source matching and highlighted reports",
+  "scripts": {
+    "dev": "node --watch server/index.js",
+    "start": "node server/index.js",
+    "test": "node --test server/"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "express": "^4.21.2",
+    "mammoth": "^1.8.0",
+    "multer": "^1.4.5-lts.1",
+    "pdf-parse": "^1.1.1"
+  }
+}

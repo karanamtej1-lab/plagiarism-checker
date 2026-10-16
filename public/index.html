@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Plagiarism Checker</title>
+  <meta name="description" content="Free plagiarism checker: finds copied passages on the web and highlights each one with its source.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%232f5bd3'/><path d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">✓</span>
+      <span>Plagiarism Checker</span>
+    </div>
+    <button id="theme" class="ghost" type="button" aria-label="Toggle dark mode">◐</button>
+  </header>
+
+  <main>
+    <!-- Input -->
+    <section id="input-view" class="view">
+      <div class="intro">
+        <h1>Check your writing for copied text</h1>
+        <p>Paste an essay or upload a file. Each passage is searched on the web, and any wording that matches a source is highlighted with a link to it.</p>
+      </div>
+
+      <div class="card editor">
+        <div class="editor-head">
+          <label for="text" class="label">Your document</label>
+          <div class="file-row">
+            <span id="file-name" class="muted"></span>
+            <label class="button secondary small">
+              Upload file
+              <input id="file" type="file" accept=".txt,.md,.docx,.pdf" hidden>
+            </label>
+          </div>
+        </div>
+        <div id="drop" class="drop">
+          <textarea id="text" spellcheck="false" placeholder="Paste text here, or drop a .txt, .docx or .pdf file (up to 4 MB)…"></textarea>
+        </div>
+        <div class="editor-foot">
+          <span id="count" class="muted">0 words</span>
+          <span class="muted">Up to 60,000 characters</span>
+        </div>
+      </div>
+
+      <div class="card options">
+        <label class="check"><input type="checkbox" id="opt-web" checked> Search the web</label>
+        <label class="check"><input type="checkbox" id="opt-quotes" checked> Ignore quoted text</label>
+        <label class="check"><input type="checkbox" id="opt-refs" checked> Ignore reference list</label>
+        <label class="select">Smallest match
+          <select id="opt-minrun">
+            <option value="6">6 words</option>
+            <option value="8" selected>8 words</option>
+            <option value="12">12 words</option>
+            <option value="20">20 words</option>
+          </select>
+        </label>
+      </div>
+
+      <details class="card own">
+        <summary>Compare against your own sources <span class="muted">(optional)</span></summary>
+        <p class="muted">Paste a classmate's draft, an article behind a paywall, or anything the web search can't reach.</p>
+        <div id="own-list"></div>
+        <button id="own-add" class="secondary small" type="button">+ Add source</button>
+      </details>
+
+      <div class="actions">
+        <p id="error" class="error" role="alert" hidden></p>
+        <button id="run" class="primary" type="button">Check for plagiarism</button>
+      </div>
+    </section>
+
+    <!-- Progress -->
+    <section id="progress-view" class="view" hidden>
+      <div class="card progress">
+        <h2 id="stage">Starting…</h2>
+        <div class="bar"><div id="bar-fill"></div></div>
+        <ol class="steps">
+          <li data-step="search">Searching the web for each passage</li>
+          <li data-step="fetch">Downloading likely sources</li>
+          <li data-step="compare">Comparing wording</li>
+        </ol>
+        <button id="cancel" class="secondary small" type="button">Cancel</button>
+      </div>
+    </section>
+
+    <!-- Report -->
+    <section id="report-view" class="view" hidden>
+      <div class="report-head">
+        <div class="score">
+          <div id="ring" class="ring"><span id="score-num">0%</span></div>
+          <div>
+            <div class="eyebrow">Similarity</div>
+            <div id="verdict" class="verdict"></div>
+            <div id="summary" class="muted"></div>
+          </div>
+        </div>
+        <div class="report-actions">
+          <button id="edit" class="secondary" type="button">Edit text</button>
+          <button id="print" class="primary" type="button">Save as PDF</button>
+        </div>
+      </div>
+
+      <div class="report-grid">
+        <article class="card doc">
+          <div class="doc-head">
+            <h2>Document</h2>
+            <span class="legend"><i class="sw ex"></i>Ignored</span>
+          </div>
+          <div id="doc" class="doc-body"></div>
+        </article>
+        <aside class="card sources">
+          <h2>Sources</h2>
+          <ol id="source-list"></ol>
+          <p id="stats" class="muted small-print"></p>
+        </aside>
+      </div>
+      <p class="disclaimer muted">Similarity means matching wording, not proof of misconduct. Properly quoted and cited passages are normal; review each match yourself.</p>
+    </section>
+  </main>
+
+  <template id="own-tpl">
+    <div class="own-item">
+      <input class="own-title" type="text" placeholder="Source name">
+      <textarea class="own-text" placeholder="Paste the source text"></textarea>
+      <button class="ghost own-remove" type="button" aria-label="Remove source">✕</button>
+    </div>
+  </template>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>
