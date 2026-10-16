@@ -2,6 +2,8 @@
 
 A free plagiarism checker. Paste text or upload a `.txt`, `.docx` or `.pdf`. Each passage is searched on the web, and every copied phrase is highlighted and linked to the page it came from.
 
+**Live:** https://plagiarism-checker-nu-inky.vercel.app
+
 This is a ground-up rewrite of [cu-sanjay/Free-Turnitin-Plagiarism-Checker](https://github.com/cu-sanjay/Free-Turnitin-Plagiarism-Checker).
 
 ## Run it
@@ -13,6 +15,14 @@ npm test
 ```
 
 Requires Node 20+. No API keys needed.
+
+## Deploy
+
+Deployed on Vercel with the Express preset (`vercel.json`). Vercel requires the entry file to import `express` itself, so the app lives in `app.js`; `server/index.js` only calls `listen()` for local dev. Uploads are capped at 4 MB because Vercel rejects request bodies over 4.5 MB.
+
+```bash
+npx vercel deploy --prod
+```
 
 ## How it works
 
