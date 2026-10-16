@@ -51,12 +51,14 @@ text.addEventListener("input", () => safeStore("draft", text.value));
 
 async function loadFile(file) {
   showError("");
+  // Vercel rejects request bodies over 4.5 MB before the server sees them.
+  if (file.size > 4 * 1024 * 1024) return showError("That file is too big. The limit is 4 MB.");
   $("#file-name").textContent = `Reading ${file.name}…`;
   const form = new FormData();
   form.append("file", file);
   try {
     const res = await fetch("/api/extract", { method: "POST", body: form });
-    const data = await res.json();
+    const data = await res.json().catch(() => ({ error: `Upload failed (HTTP ${res.status}).` }));
     if (!res.ok) throw new Error(data.error);
     text.value = data.text;
     safeStore("draft", text.value);
